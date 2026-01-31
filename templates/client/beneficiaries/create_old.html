@@ -1,0 +1,20 @@
+{% extends "client/base_client.html" %}
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Add Beneficiary</h1>
+
+{% if error %}
+<p class="text-red-500">{{ error }}</p>
+{% endif %}
+
+<form method="post" class="space-y-3 max-w-md">
+    {% csrf_token %}
+    <input name="name" placeholder="Beneficiary Name" class="w-full border p-2">
+    <input name="bank" placeholder="Bank Name" class="w-full border p-2">
+    <input name="account" placeholder="Account Number" class="w-full border p-2">
+    <input name="country" placeholder="Country" class="w-full border p-2">
+    <input name="otp" placeholder="OTP (123456)" class="w-full border p-2">
+    <button class="bg-bankBlue text-white px-4 py-2 rounded">
+        Save Beneficiary
+    </button>
+</form>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "client/base_client.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">
+How to Wire Funds
+</h1>
+
+{% if instruction %}
+<div class="bg-white p-4 rounded shadow relative">
+    <pre id="instructionText"
+         class="whitespace-pre-wrap text-sm">{{ instruction.content }}</pre>
+
+    <button onclick="copyText()"
+            class="mt-4 bg-blue-600 text-white px-3 py-2 rounded">
+        Copy Instructions
+    </button>
+</div>
+{% else %}
+<p>No instructions available.</p>
+{% endif %}
+
+<script>
+function copyText() {
+    const text = document.getElementById("instructionText").innerText;
+    navigator.clipboard.writeText(text);
+    alert("Instructions copied");
+}
+</script>
+{% endblock %}

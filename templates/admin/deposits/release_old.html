@@ -1,0 +1,24 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">
+Release Deposit — {{ account.customer.username }} ({{ account.currency }})
+</h1>
+
+<h3 class="text-xl font mb-3 colour-red">
+Deposit Amount — {{ amount }} ({{ account.currency }})
+</h3>
+
+<form method="post" class="space-y-4 max-w-sm">
+    {% csrf_token %}
+
+    <input name="reference"
+           placeholder="Deposit Reference (DEP001)"
+           class="w-full border p-2"
+           required>
+
+    <button class="bg-green-600 text-white px-4 py-2 rounded">
+        Release Deposit
+    </button>
+</form>
+{% endblock %}

@@ -1,0 +1,63 @@
+<aside class="w-64 bg-bankBlue text-white flex flex-col">
+    <div class="p-4 text-xl font-bold border-b border-blue-400">
+        Prominence Bank
+    </div>
+
+    <nav class="flex-1 p-4 space-y-2">
+        <a href="{% url 'client_dashboard' %}"
+        class="block px-3 py-2 rounded hover:bg-blue-600">
+            Dashboard
+        </a>
+
+        <a href="{% url 'transfers:client_beneficiaries' %}"
+        class="block px-3 py-2 rounded hover:bg-blue-600">
+            Beneficiaries
+        </a>
+
+        <a href="{% url 'transfers:client_wire_requests' %}"
+        class="block px-3 py-2 rounded hover:bg-blue-600">
+            Wire Requests
+        </a>
+
+        <a href="{% url 'transfers:client_wire_create' %}"
+        class="block px-3 py-2 rounded hover:bg-blue-600">
+            New Wire Transfer
+        </a>
+        <a href="{% url 'client_statements' %}"
+        class="block px-3 py-2 rounded hover:bg-blue-600">
+            Statements
+        </a>
+        <a href="{% url 'instruments:client_ktt_list' %}"
+        class="block px-3 py-2 rounded hover:bg-blue-600">
+            Instruments
+        </a>
+
+
+    </nav>
+</aside>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <aside class="w-64 bg-bankBlue text-white flex flex-col">
+    <div class="p-4 text-xl font-bold border-b border-blue-400">
+        Prominence Bank
+    </div>
+
+    <nav class="flex-1 p-4 space-y-2">
+        <a href="#" class="block px-3 py-2 rounded hover:bg-blue-600">Dashboard</a>
+        <a href="#" class="block px-3 py-2 rounded hover:bg-blue-600">Accounts</a>
+        <a href="#" class="block px-3 py-2 rounded hover:bg-blue-600">Transfers</a>
+        <a href="#" class="block px-3 py-2 rounded hover:bg-blue-600">Statements</a>
+        <a href="#" class="block px-3 py-2 rounded hover:bg-blue-600">Instruments</a>
+    </nav>
+</aside> -->

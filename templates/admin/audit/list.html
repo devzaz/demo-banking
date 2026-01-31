@@ -1,0 +1,115 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Audit Logs</h1>
+      <p class="text-sm text-slate-500">Track critical actions across the admin back office.</p>
+    </div>
+
+    <!-- Optional: UI-only search (wire later) -->
+    <div class="w-full sm:w-80">
+      <label class="sr-only" for="audit-search">Search</label>
+      <div class="relative">
+        <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 21l-4.35-4.35m1.85-5.4a7.25 7.25 0 1 1-14.5 0 7.25 7.25 0 0 1 14.5 0Z"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <input
+          id="audit-search"
+          type="text"
+          placeholder="Search user, action, description…"
+          class="w-full rounded-xl border border-slate-200 bg-white py-2 pl-10 pr-3 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-50">
+          <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <th class="px-6 py-4">Timestamp</th>
+            <th class="px-6 py-4">User</th>
+            <th class="px-6 py-4">Action</th>
+            <th class="px-6 py-4">Description</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-slate-100">
+          {% for log in logs %}
+          <tr class="{% cycle 'bg-white' 'bg-slate-50/40' %} hover:bg-slate-100/60 transition-colors">
+            <!-- Timestamp -->
+            <td class="px-6 py-4 font-mono tabular-nums text-slate-900">
+              {{ log.created_at|date:"Y-m-d H:i:s" }}
+            </td>
+
+            <!-- User -->
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 font-semibold">
+                  {% if log.user %}
+                    {{ log.user.username|slice:":1"|upper }}
+                  {% else %}
+                    S
+                  {% endif %}
+                </div>
+                <div class="min-w-0">
+                  <div class="font-semibold text-slate-900 truncate">
+                    {{ log.user.username|default:"System" }}
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Action -->
+            <td class="px-6 py-4">
+              <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+                {{ log.get_action_display }}
+              </span>
+            </td>
+
+            <!-- Description -->
+            <td class="px-6 py-4 text-slate-700">
+              <div class="max-w-3xl break-words">
+                {{ log.description }}
+              </div>
+            </td>
+          </tr>
+
+          {% empty %}
+          <tr>
+            <td colspan="4" class="px-6 py-12">
+              <div class="flex flex-col items-center text-center">
+                <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                  <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="text-sm font-semibold text-slate-900">No audit logs yet</div>
+                <div class="text-sm text-slate-500">When actions occur, they’ll appear here.</div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex items-center justify-between gap-3 border-t border-slate-200 bg-white px-6 py-4 text-sm text-slate-600">
+      <div>
+        Showing <span class="font-semibold text-slate-900">{{ logs|length }}</span>
+        log{{ logs|length|pluralize }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

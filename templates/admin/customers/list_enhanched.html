@@ -1,0 +1,211 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Customers</h1>
+      <p class="text-sm text-slate-500">Manage customers and create accounts.</p>
+    </div>
+
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+      <!-- Optional: purely visual search bar (wire it later) -->
+      <div class="w-full sm:w-80">
+        <label class="sr-only" for="customer-search">Search</label>
+        <div class="relative">
+          <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M21 21l-4.35-4.35m1.85-5.4a7.25 7.25 0 1 1-14.5 0 7.25 7.25 0 0 1 14.5 0Z"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input
+            id="customer-search"
+            type="text"
+            placeholder="Search username or email…"
+            class="w-full rounded-xl border border-slate-200 bg-white py-2 pl-10 pr-3 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+          />
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <a href="{% url 'admin_customer_create' %}"
+         class="inline-flex items-center justify-center gap-2 rounded-xl bg-bankBlue px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100">
+        <span class="text-lg leading-none">+</span>
+        <span>Create Customer</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-50">
+          <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <th class="px-6 py-4">Customer</th>
+            <th class="px-6 py-4">Email</th>
+            <th class="px-6 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-slate-100">
+          {% for c in customers %}
+          <tr class="{% cycle 'bg-white' 'bg-slate-50/40' %} hover:bg-slate-100/60 transition-colors">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <!-- Avatar -->
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 font-semibold">
+                  {{ c.username|slice:":1"|upper }}
+                </div>
+
+                <div class="min-w-0">
+                  <div class="font-semibold text-slate-900 truncate">
+                    {{ c.username }}
+                  </div>
+                  {% if c.first_name or c.last_name %}
+                  <div class="text-xs text-slate-500 truncate">
+                    {{ c.first_name }} {{ c.last_name }}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </td>
+
+            <td class="px-6 py-4 text-slate-700">
+              {% if c.email %}
+                <span class="truncate block">{{ c.email }}</span>
+              {% else %}
+                <span class="text-slate-400">No email</span>
+              {% endif %}
+            </td>
+
+            <td class="px-6 py-4">
+              <div class="flex items-center justify-end gap-2">
+                <a href="{% url 'admin_account_create' c.id %}"
+                   class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100">
+                  Create Account
+                </a>
+
+                <!-- Optional placeholder buttons (wire later if you add routes) -->
+                {# 
+                <a href="{% url 'admin_customer_detail' c.id %}" class="...">View</a>
+                <a href="{% url 'admin_customer_edit' c.id %}" class="...">Edit</a>
+                #}
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" class="px-6 py-12">
+              <div class="flex flex-col items-center text-center">
+                <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                  <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                    <path d="M20 8v6M17 11h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="text-sm font-semibold text-slate-900">No customers yet</div>
+                <div class="text-sm text-slate-500">Create your first customer to get started.</div>
+                <a href="{% url 'admin_customer_create' %}"
+                   class="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-bankBlue px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100">
+                  <span class="text-lg leading-none">+</span>
+                  <span>Create Customer</span>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex items-center justify-between gap-3 border-t border-slate-200 bg-white px-6 py-4 text-sm text-slate-600">
+      <div>
+        Showing <span class="font-semibold text-slate-900">{{ customers|length }}</span>
+        customer{{ customers|length|pluralize }}
+      </div>
+
+      <!-- Optional placeholder for pagination -->
+      <div class="flex items-center gap-2">
+        <button class="rounded-xl border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50" disabled>
+          Prev
+        </button>
+        <button class="rounded-xl border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50" disabled>
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Customers</h1>
+
+<a href="{% url 'admin_customer_create' %}"
+   class="bg-bankBlue text-white px-4 py-2 rounded">
+   + Create Customer
+</a>
+
+<table class="mt-4 w-full bg-white rounded shadow">
+    <tr class="border-b">
+        <th class="p-2 text-left">Username</th>
+        <th class="p-2">Email</th>
+        <th class="p-2">Actions</th>
+    </tr>
+
+    {% for c in customers %}
+    <tr class="border-b">
+        <td class="p-2">{{ c.username }}</td>
+        <td class="p-2">{{ c.email }}</td>
+        <td class="p-2">
+            <a href="{% url 'admin_account_create' c.id %}"
+               class="text-blue-600 underline">
+               Create Account
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
+
+
+
+
+
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Customers</h1>
+
+<a href="{% url 'admin_customer_create' %}"
+   class="bg-bankBlue text-white px-4 py-2 rounded">
+   + Create Customer
+</a>
+
+<table class="mt-4 w-full bg-white rounded shadow">
+    <tr class="border-b">
+        <th class="p-2 text-left">Username</th>
+        <th class="p-2">Email</th>
+        <th class="p-2">Actions</th>
+    </tr>
+
+    {% for c in customers %}
+    <tr class="border-b">
+        <td class="p-2">{{ c.username }}</td>
+        <td class="p-2">{{ c.email }}</td>
+        <td class="p-2">
+            <a href="{% url 'admin_account_create' c.id %}"
+               class="text-blue-600 underline">
+               Create Account
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

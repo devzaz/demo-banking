@@ -1,0 +1,118 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Wire Requests</h1>
+      <p class="text-sm text-slate-500">Review and approve pending wire transfers.</p>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-50">
+          <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <th class="px-6 py-4">Customer</th>
+            <th class="px-6 py-4 text-right">Amount</th>
+            <th class="px-6 py-4">Status</th>
+            <th class="px-6 py-4 text-right">Action</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-slate-100">
+          {% for w in requests %}
+          <tr class="{% cycle 'bg-white' 'bg-slate-50/40' %} hover:bg-slate-100/60 transition-colors">
+            <!-- Customer -->
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 font-semibold">
+                  {{ w.customer.username|slice:":1"|upper }}
+                </div>
+                <div class="font-semibold text-slate-900">
+                  {{ w.customer.username }}
+                </div>
+              </div>
+            </td>
+
+            <!-- Amount -->
+            <td class="px-6 py-4 text-right font-mono tabular-nums text-slate-900">
+              {{ w.amount }}
+            </td>
+
+            <!-- Status -->
+            <td class="px-6 py-4">
+              {% if w.status == "PENDING" %}
+                <span class="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-800">
+                  Pending
+                </span>
+              {% elif w.status == "APPROVED" %}
+                <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">
+                  Approved
+                </span>
+              {% elif w.status == "REJECTED" %}
+                <span class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-800">
+                  Rejected
+                </span>
+              {% else %}
+                <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                  {{ w.status }}
+                </span>
+              {% endif %}
+            </td>
+
+            <!-- Action -->
+            <td class="px-6 py-4 text-right">
+                {% if w.status == "PENDING" %}
+                    <div class="flex justify-end gap-2">
+                    <!-- Approve -->
+                    <a href="{% url 'transfers:admin_wire_approve' w.id %}"
+                        class="inline-flex items-center rounded-xl bg-green-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-100">
+                        Approve
+                    </a>
+
+                    <!-- Reject -->
+                    <a href="{% url 'transfers:admin_wire_reject' w.id %}"
+                        class="inline-flex items-center rounded-xl bg-red-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-100">
+                        Reject
+                    </a>
+                    </div>
+                {% else %}
+                    <span class="text-slate-400 text-sm">—</span>
+                {% endif %}
+            </td>
+          </tr>
+
+          {% empty %}
+          <tr>
+            <td colspan="4" class="px-6 py-12">
+              <div class="flex flex-col items-center text-center">
+                <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                  <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="text-sm font-semibold text-slate-900">No wire requests</div>
+                <div class="text-sm text-slate-500">Pending wire transfers will appear here.</div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex items-center justify-between border-t border-slate-200 bg-white px-6 py-4 text-sm text-slate-600">
+      <div>
+        Showing <span class="font-semibold text-slate-900">{{ requests|length }}</span>
+        request{{ requests|length|pluralize }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

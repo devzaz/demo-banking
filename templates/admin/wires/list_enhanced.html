@@ -1,0 +1,58 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- backup -->
+
+{% extends "admin/base_admin.html" %}
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Wire Requests</h1>
+
+<table class="w-full bg-white rounded shadow">
+<tr>
+    <th>Customer</th><th>Amount</th><th>Status</th><th>Action</th>
+</tr>
+
+{% for w in requests %}
+<tr>
+    <td>{{ w.customer.username }}</td>
+    <td>{{ w.amount }}</td>
+    <td>{{ w.status }}</td>
+    <td>
+        {% if w.status == "PENDING" %}
+        <a href="{% url 'transfers:admin_wire_approve' w.id %}"
+           class="text-green-600 underline">
+           Approve
+        </a>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Create Customer</h1>
+
+<form method="post" class="space-y-4 max-w-md">
+    {% csrf_token %}
+    <input name="username" placeholder="Username" class="w-full border p-2" required>
+    <input name="email" placeholder="Email" class="w-full border p-2" required>
+    <input name="password" type="password" placeholder="Password"
+           class="w-full border p-2" required>
+
+    <button class="bg-bankBlue text-white px-4 py-2 rounded">
+        Create
+    </button>
+</form>
+{% endblock %}

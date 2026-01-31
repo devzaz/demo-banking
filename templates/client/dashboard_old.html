@@ -1,0 +1,50 @@
+{% extends "client/base_client.html" %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+
+{% if accounts %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {% for acc in accounts %}
+    <div class="bg-white rounded shadow p-4">
+        <h2 class="text-lg font-semibold mb-2">
+            {{ acc.currency }} Account
+        </h2>
+
+        <div class="space-y-1 text-sm">
+            <p>
+                <span class="text-gray-500">Available:</span>
+                <span class="font-semibold text-green-600">
+                    {{ acc.available }}
+                </span>
+            </p>
+            <p>
+                <span class="text-gray-500">In Transit:</span>
+                <span class="font-semibold text-orange-500">
+                    {{ acc.transit }}
+                </span>
+            </p>
+            <p>
+                <span class="text-gray-500">Held:</span>
+                <span class="font-semibold text-red-500">
+                    {{ acc.held }}
+                </span>
+            </p>
+
+            <hr class="my-2">
+
+            <p class="font-bold">
+                Total: {{ acc.total }}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="bg-white p-6 rounded shadow">
+    <p class="text-gray-600">
+        No accounts found. Please contact support.
+    </p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "client/base_client.html" %}
+
+{% block content %}
+<div class="max-w-3xl space-y-6">
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">External Wire Request</h1>
+    <p class="mt-1 text-sm text-slate-500">
+      Choose the account, beneficiary, and amount to submit a wire transfer request.
+    </p>
+  </div>
+
+  <!-- Card -->
+  <div class="max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+
+      <!-- Account -->
+      <div class="space-y-1.5">
+        <label for="account_id" class="text-sm font-semibold text-slate-700">From Account</label>
+        <div class="relative">
+          <select
+            id="account_id"
+            name="account_id"
+            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-10 text-sm text-slate-900 shadow-sm outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+            required
+          >
+            {% for acc in accounts %}
+            <option value="{{ acc.id }}">{{ acc.currency }}</option>
+            {% endfor %}
+          </select>
+
+          <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <!-- Beneficiary -->
+      <div class="space-y-1.5">
+        <label for="beneficiary_id" class="text-sm font-semibold text-slate-700">Beneficiary</label>
+        <div class="relative">
+          <select
+            id="beneficiary_id"
+            name="beneficiary_id"
+            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-10 text-sm text-slate-900 shadow-sm outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+            required
+          >
+            {% for b in beneficiaries %}
+            <option value="{{ b.id }}">{{ b.name }} ({{ b.bank_name }})</option>
+            {% endfor %}
+          </select>
+
+          <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+
+        {% if not beneficiaries %}
+          <p class="text-xs text-red-600">No beneficiaries found. Please add one first.</p>
+        {% else %}
+          <p class="text-xs text-slate-500">Select who will receive the funds.</p>
+        {% endif %}
+      </div>
+
+      <!-- Amount -->
+      <div class="space-y-1.5">
+        <label for="amount" class="text-sm font-semibold text-slate-700">Amount</label>
+        <div class="relative">
+          <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+            <!-- dollar icon -->
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2v20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M17 6.5c0-1.93-2.24-3.5-5-3.5S7 4.57 7 6.5 9.24 10 12 10s5 1.57 5 3.5S14.76 17 12 17s-5-1.57-5-3.5"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+
+          <input
+            id="amount"
+            name="amount"
+            placeholder="e.g. 250.00"
+            inputmode="decimal"
+            required
+            class="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+          />
+        </div>
+        <p class="text-xs text-slate-500">Ensure you have enough available balance before submitting.</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-3 pt-1">
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center rounded-xl bg-bankBlue px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100"
+        >
+          Submit Wire Request
+        </button>
+
+        <a href="{% url 'transfers:client_wire_requests' %}"
+           class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100">
+          Cancel
+        </a>
+      </div>
+
+      <!-- Note -->
+      <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <span class="font-semibold">Note:</span> Wire requests may require review and approval before processing.
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

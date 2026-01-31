@@ -1,0 +1,103 @@
+<aside class="w-64 bg-gray-900 text-white flex flex-col">
+    <div class="p-4 text-xl font-bold border-b border-gray-700">
+        Prominence Bank
+    </div>
+
+    <nav class="flex-1 p-4 space-y-2 text-sm">
+
+        <a href="{% url 'admin_customer_list' %}"
+        class="block px-3 py-2 rounded hover:bg-gray-700">
+            Customers
+        </a>
+
+        <a href="{% url 'admin_account_list' %}"
+        class="block px-3 py-2 rounded hover:bg-gray-700">
+            Accounts
+        </a>
+
+        <a href="{% url 'admin_deposit_create' %}"
+        class="block px-3 py-2 rounded hover:bg-gray-700">
+            Deposits
+        </a>
+
+        <a href="{% url 'transfers:admin_wire_requests' %}"
+        class="block px-3 py-2 rounded hover:bg-gray-700">
+            Wire Requests
+        </a>
+
+        <a href="{% url 'admin_funding_instruction' %}"
+        class="block px-3 py-2 rounded hover:bg-gray-700">
+            Funding Instructions
+        </a>
+
+        <a href="{% url 'instruments:admin_ktt_create' %}"
+        class="block px-3 py-2 rounded hover:bg-gray-700">
+            Instruments (KTT)
+        </a>
+
+        <a href="{% url 'audit:audit_list' %}"
+        class="block px-3 py-2 rounded hover:bg-gray-700">
+            Audit Logs
+        </a>
+
+
+
+
+    </nav>
+
+</aside>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <aside class="w-64 bg-gray-900 text-white flex flex-col">
+    <div class="p-4 text-xl font-bold border-b border-gray-700">
+        Prominence Bank
+    </div>
+
+    <nav class="flex-1 p-4 space-y-2 text-sm">
+            <a class="block px-3 py-2 rounded hover:bg-gray-700" href="{% url 'admin_customer_list' %}">Customers</a>
+            <a class="block px-3 py-2 rounded hover:bg-gray-700" href="{% url 'admin_account_list' %}">Accounts</a>   
+
+            <a href="#"
+            class="block px-3 py-2 rounded opacity-50 cursor-not-allowed">
+                Settings
+            </a>
+        <a href="{% url 'admin_deposit_create' %}"
+        class="block px-3 py-2 rounded hover:bg-gray-700">
+            Deposits
+        </a>
+        <a class="block px-3 py-2 rounded hover:bg-gray-700">Transfers</a>
+        <a class="block px-3 py-2 rounded hover:bg-gray-700">Instruments</a>
+        <a class="block px-3 py-2 rounded hover:bg-gray-700">Audit Logs</a>
+    </nav>
+</aside> -->

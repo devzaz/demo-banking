@@ -1,0 +1,25 @@
+{% extends "client/base_client.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Beneficiaries</h1>
+
+<a href="{% url 'transfers:client_add_beneficiary' %}"
+   class="bg-bankBlue text-white px-4 py-2 rounded">
+    + Add Beneficiary
+</a>
+
+{% if beneficiaries %}
+<ul class="mt-4 space-y-3">
+    {% for b in beneficiaries %}
+    <li class="bg-white p-4 rounded shadow">
+        <div class="font-semibold">{{ b.name }}</div>
+        <div class="text-sm text-gray-600">
+            {{ b.bank_name }} — {{ b.account_number }}
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="mt-4 text-gray-500">No beneficiaries added yet.</p>
+{% endif %}
+{% endblock %}

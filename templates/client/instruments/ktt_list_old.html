@@ -1,0 +1,21 @@
+{% extends "client/base_client.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Banking Instruments</h1>
+
+{% if instruments %}
+<ul class="space-y-3">
+    {% for i in instruments %}
+    <li class="bg-white p-4 rounded shadow">
+        <div class="font-semibold">{{ i.title }}</div>
+        <a href="{% url 'instruments:client_ktt_detail' i.id %}"
+           class="text-blue-600 text-sm">
+            View Details →
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No instruments available.</p>
+{% endif %}
+{% endblock %}

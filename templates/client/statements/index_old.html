@@ -1,0 +1,49 @@
+{% extends "client/base_client.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Account Statement</h1>
+
+<form method="get" class="flex gap-4 mb-6">
+    <input type="date" name="from" required class="border p-2">
+    <input type="date" name="to" required class="border p-2">
+
+    <button class="bg-blue-600 text-white px-4 py-2 rounded">
+        Generate
+    </button>
+</form>
+
+{% if entries %}
+<div class="mb-4">
+    <a href="{% url 'statement_csv' %}?from={{ start|date:'Y-m-d' }}&to={{ end|date:'Y-m-d' }}"
+       class="bg-gray-800 text-white px-3 py-2 rounded mr-2">
+        Download CSV
+    </a>
+
+    <a href="{% url 'statement_pdf' %}?from={{ start|date:'Y-m-d' }}&to={{ end|date:'Y-m-d' }}"
+       class="bg-green-700 text-white px-3 py-2 rounded">
+        Download PDF
+    </a>
+</div>
+
+<table class="w-full bg-white shadow rounded">
+    <thead>
+        <tr class="border-b">
+            <th class="p-2 text-left">Date</th>
+            <th class="p-2 text-left">Type</th>
+            <th class="p-2 text-right">Amount</th>
+            <th class="p-2 text-left">Reference</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in entries %}
+        <tr class="border-b">
+            <td class="p-2">{{ e.created_at|date:"Y-m-d" }}</td>
+            <td class="p-2">{{ e.entry_type }}</td>
+            <td class="p-2 text-right">{{ e.amount }}</td>
+            <td class="p-2">{{ e.reference }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "shared/base_auth.html" %}
+
+{% block content %}
+<div class="w-full max-w-md mx-auto">
+  <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <!-- Header -->
+    <div class="mb-6 text-center">
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Verify OTP</h1>
+      <p class="mt-1 text-sm text-slate-500">
+        Enter the 6-digit code sent to you.
+        <span class="block mt-1 text-xs text-slate-400">
+          Demo OTP: <span class="font-semibold text-slate-600">123456</span>
+        </span>
+      </p>
+    </div>
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+
+      {% if error %}
+        <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 text-center">
+          {{ error }}
+        </div>
+      {% endif %}
+
+      <!-- OTP -->
+      <div class="space-y-1.5">
+        <label for="otp" class="sr-only">OTP</label>
+
+        <div class="relative">
+          <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+            <!-- key icon -->
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 14a4 4 0 1 1 3.3 3.94L8 20H6v-2H4v-2l3.05-3.05A4.05 4.05 0 0 1 7 14Z"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 10h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </span>
+
+          <input
+            id="otp"
+            type="text"
+            name="otp"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            placeholder="••••••"
+            maxlength="6"
+            required
+            class="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-center text-sm font-semibold tracking-[0.35em] text-slate-900 shadow-sm outline-none placeholder:text-slate-300 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+          />
+        </div>
+
+        <p class="text-xs text-slate-500 text-center">Make sure there are no spaces.</p>
+      </div>
+
+      <!-- Button -->
+      <button
+        type="submit"
+        class="mt-2 w-full rounded-xl bg-bankBlue py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100"
+      >
+        Verify OTP
+      </button>
+
+      <!-- Optional helper -->
+      <!-- <div class="pt-2 text-center text-sm text-slate-500">
+        Didn’t receive a code?
+        <span class="text-slate-400">(Resend coming soon)</span>
+      </div> -->
+    </form>
+  </div>
+
+  <p class="mt-6 text-center text-xs text-slate-500">
+    For your security, OTP codes expire quickly.
+  </p>
+</div>
+{% endblock %}

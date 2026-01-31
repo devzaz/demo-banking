@@ -1,0 +1,88 @@
+{% extends "client/base_client.html" %}
+
+{% block content %}
+<div class="max-w-4xl space-y-6">
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">How to Wire Funds</h1>
+    <p class="mt-1 text-sm text-slate-500">
+      Follow these instructions to fund your account via wire transfer.
+    </p>
+  </div>
+
+  {% if instruction %}
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <!-- Top bar -->
+    <div class="flex flex-col gap-2 border-b border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 class="text-sm font-semibold text-slate-900">Wire Funding Instructions</h2>
+        <p class="mt-1 text-sm text-slate-500">You can copy and share this with your bank.</p>
+      </div>
+
+      <button
+        type="button"
+        onclick="copyInstructions()"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-bankBlue px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100"
+      >
+        <!-- copy icon -->
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M9 9h10v10H9V9Z" stroke="currentColor" stroke-width="2"/>
+          <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Copy Instructions
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="px-6 py-5">
+      <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <pre id="instructionText" class="whitespace-pre-wrap text-sm text-slate-800 font-mono">{{ instruction.content }}</pre>
+      </div>
+
+      <!-- Feedback toast -->
+      <div id="copyToast"
+           class="mt-4 hidden rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+        Instructions copied to clipboard.
+      </div>
+
+      <p class="mt-4 text-xs text-slate-500">
+        Tip: Make sure to include any required reference exactly as shown.
+      </p>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="flex items-start gap-3">
+      <div class="mt-0.5 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </div>
+      <div>
+        <div class="text-sm font-semibold text-slate-900">No instructions available</div>
+        <p class="mt-1 text-sm text-slate-500">Please contact support for funding details.</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  async function copyInstructions() {
+    const text = document.getElementById("instructionText")?.innerText || "";
+    const toast = document.getElementById("copyToast");
+
+    try {
+      await navigator.clipboard.writeText(text);
+      if (toast) {
+        toast.classList.remove("hidden");
+        setTimeout(() => toast.classList.add("hidden"), 2000);
+      }
+    } catch (e) {
+      alert("Could not copy. Please copy manually.");
+    }
+  }
+</script>
+{% endblock %}

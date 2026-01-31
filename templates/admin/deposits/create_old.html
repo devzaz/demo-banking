@@ -1,0 +1,30 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Add Deposit (Held)</h1>
+
+<form method="post" class="space-y-4 max-w-md">
+    {% csrf_token %}
+
+    <label class="block">
+        Account
+        <select name="account_id" class="w-full border p-2">
+            {% for acc in accounts %}
+            <option value="{{ acc.id }}">
+                {{ acc.customer.username }} — {{ acc.currency }}
+            </option>
+            {% endfor %}
+        </select>
+    </label>
+
+    <input name="amount" placeholder="Amount"
+           class="w-full border p-2" required>
+
+    <input name="reference" placeholder="Reference (DEP001)"
+           class="w-full border p-2" required>
+
+    <button class="bg-bankBlue text-white px-4 py-2 rounded">
+        Create Deposit (Held)
+    </button>
+</form>
+{% endblock %}

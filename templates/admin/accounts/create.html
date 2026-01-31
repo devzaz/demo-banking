@@ -1,0 +1,75 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="max-w-xl space-y-6">
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">
+      Create Account
+    </h1>
+    <p class="mt-1 text-sm text-slate-500">
+      Create a new account for
+      <span class="font-semibold text-slate-900">{{ customer.username }}</span>.
+    </p>
+  </div>
+
+  <!-- Card -->
+  <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+
+      <!-- Customer display -->
+      <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-700 font-semibold">
+          {{ customer.username|slice:":1"|upper }}
+        </div>
+        <div class="min-w-0">
+          <div class="text-sm font-semibold text-slate-900 truncate">{{ customer.username }}</div>
+          {% if customer.email %}
+          <div class="text-xs text-slate-500 truncate">{{ customer.email }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Currency -->
+      <div class="space-y-1.5">
+        <label for="currency" class="text-sm font-semibold text-slate-700">Currency</label>
+        <div class="relative">
+          <select
+            id="currency"
+            name="currency"
+            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-10 text-sm text-slate-900 shadow-sm outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+          >
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+          </select>
+
+          <!-- chevron -->
+          <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+        <p class="text-xs text-slate-500">Choose the currency for this account.</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-3 pt-1">
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center rounded-xl bg-bankBlue px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100"
+        >
+          Create Account
+        </button>
+
+        <a href="{% url 'admin_customer_list' %}"
+           class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

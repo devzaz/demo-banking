@@ -1,0 +1,113 @@
+{% extends "client/base_client.html" %}
+
+{% block content %}
+<div class="max-w-3xl space-y-6">
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Add Beneficiary</h1>
+    <p class="mt-1 text-sm text-slate-500">
+      Add a new beneficiary for wire transfers. Please verify with OTP.
+      <span class="block text-xs text-slate-400 mt-1">Demo OTP: <span class="font-semibold text-slate-600">123456</span></span>
+    </p>
+  </div>
+
+  <!-- Error -->
+  {% if error %}
+    <div class="max-w-xl rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      {{ error }}
+    </div>
+  {% endif %}
+
+  <!-- Card -->
+  <div class="max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+
+      <!-- Beneficiary Name -->
+      <div class="space-y-1.5">
+        <label for="name" class="text-sm font-semibold text-slate-700">Beneficiary Name</label>
+        <input
+          id="name"
+          name="name"
+          placeholder="e.g. John Smith"
+          class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+          required
+        />
+      </div>
+
+      <!-- Bank Name -->
+      <div class="space-y-1.5">
+        <label for="bank" class="text-sm font-semibold text-slate-700">Bank Name</label>
+        <input
+          id="bank"
+          name="bank"
+          placeholder="e.g. ABC Bank"
+          class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+          required
+        />
+      </div>
+
+      <!-- Account Number -->
+      <div class="space-y-1.5">
+        <label for="account" class="text-sm font-semibold text-slate-700">Account Number</label>
+        <input
+          id="account"
+          name="account"
+          placeholder="e.g. 1234567890"
+          inputmode="numeric"
+          class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+          required
+        />
+      </div>
+
+      <!-- Country -->
+      <div class="space-y-1.5">
+        <label for="country" class="text-sm font-semibold text-slate-700">Country</label>
+        <input
+          id="country"
+          name="country"
+          placeholder="e.g. United States"
+          class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+          required
+        />
+      </div>
+
+      <!-- OTP -->
+      <div class="space-y-1.5">
+        <label for="otp" class="text-sm font-semibold text-slate-700">OTP</label>
+        <input
+          id="otp"
+          name="otp"
+          placeholder="6-digit OTP"
+          inputmode="numeric"
+          maxlength="6"
+          autocomplete="one-time-code"
+          class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+          required
+        />
+        <p class="text-xs text-slate-500">Enter the verification code to confirm this beneficiary.</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-3 pt-1">
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center rounded-xl bg-bankBlue px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100"
+        >
+          Save Beneficiary
+        </button>
+
+        <a href="{% url 'transfers:client_beneficiaries' %}"
+           class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100">
+          Cancel
+        </a>
+      </div>
+
+      <!-- Note -->
+      <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <span class="font-semibold">Tip:</span> Double-check the account number and bank name before saving.
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

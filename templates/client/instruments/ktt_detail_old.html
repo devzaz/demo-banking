@@ -1,0 +1,9 @@
+{% extends "client/base_client.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">{{ ktt.title }}</h1>
+
+<pre class="bg-white p-4 rounded shadow whitespace-pre-wrap text-sm">
+{{ ktt.message }}
+</pre>
+{% endblock %}

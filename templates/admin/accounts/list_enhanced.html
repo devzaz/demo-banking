@@ -1,0 +1,125 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Accounts</h1>
+      <p class="text-sm text-slate-500">Overview of customer balances by currency.</p>
+    </div>
+
+    <!-- Optional: purely visual search bar (wire it later) -->
+    <div class="w-full sm:w-80">
+      <label class="sr-only" for="account-search">Search</label>
+      <div class="relative">
+        <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+          <!-- search icon -->
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 21l-4.35-4.35m1.85-5.4a7.25 7.25 0 1 1-14.5 0 7.25 7.25 0 0 1 14.5 0Z"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <input
+          id="account-search"
+          type="text"
+          placeholder="Search customer…"
+          class="w-full rounded-xl border border-slate-200 bg-white py-2 pl-10 pr-3 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-50">
+          <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <th class="px-6 py-4">Customer</th>
+            <th class="px-6 py-4">Currency</th>
+            <th class="px-6 py-4 text-right">Available</th>
+            <th class="px-6 py-4 text-right">Transit</th>
+            <th class="px-6 py-4 text-right">Total</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-slate-100">
+          {% for acc in accounts %}
+          <tr class="{% cycle 'bg-white' 'bg-slate-50/40' %} hover:bg-slate-100/60 transition-colors">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <!-- Avatar -->
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 font-semibold">
+                  {{ acc.customer.username|slice:":1"|upper }}
+                </div>
+
+                <div class="min-w-0">
+                  <div class="font-semibold text-slate-900 truncate">
+                    {{ acc.customer.username }}
+                  </div>
+                  {% if acc.customer.email %}
+                  <div class="text-xs text-slate-500 truncate">{{ acc.customer.email }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </td>
+
+            <td class="px-6 py-4">
+              <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+                {{ acc.currency }}
+              </span>
+            </td>
+
+            <td class="px-6 py-4 text-right font-mono tabular-nums text-slate-900">
+              {{ acc.available_balance }}
+            </td>
+
+            <td class="px-6 py-4 text-right font-mono tabular-nums text-slate-900">
+              {{ acc.transit_balance }}
+            </td>
+
+            <td class="px-6 py-4 text-right font-mono tabular-nums text-slate-900">
+              {{ acc.available_balance|add:acc.transit_balance }}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="px-6 py-12">
+              <div class="flex flex-col items-center text-center">
+                <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                  <!-- empty icon -->
+                  <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 7h10M7 12h10M7 17h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z"
+                          stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="text-sm font-semibold text-slate-900">No accounts found</div>
+                <div class="text-sm text-slate-500">When accounts are created, they’ll show up here.</div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex items-center justify-between gap-3 border-t border-slate-200 bg-white px-6 py-4 text-sm text-slate-600">
+      <div>
+        Showing <span class="font-semibold text-slate-900">{{ accounts|length }}</span> account{{ accounts|length|pluralize }}
+      </div>
+      <!-- Optional placeholder for pagination -->
+      <div class="flex items-center gap-2">
+        <button class="rounded-xl border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50" disabled>
+          Prev
+        </button>
+        <button class="rounded-xl border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50" disabled>
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

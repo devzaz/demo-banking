@@ -1,0 +1,31 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Create KTT Instrument</h1>
+
+<form method="post" class="space-y-4 max-w-xl">
+    {% csrf_token %}
+
+    <select name="customer_id" class="w-full border p-2" required>
+        <option value="">Select Customer</option>
+        {% for c in customers %}
+        <option value="{{ c.id }}">{{ c.username }}</option>
+        {% endfor %}
+    </select>
+
+    <input name="title"
+           placeholder="Instrument Title"
+           class="w-full border p-2"
+           required>
+
+    <textarea name="message"
+              rows="8"
+              class="w-full border p-2 font-mono"
+              placeholder="Enter KTT message..."
+              required></textarea>
+
+    <button class="bg-blue-600 text-white px-4 py-2 rounded">
+        Create & Publish
+    </button>
+</form>
+{% endblock %}

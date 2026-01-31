@@ -1,0 +1,18 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Funding Instructions</h1>
+
+<form method="post" class="space-y-4 max-w-2xl">
+    {% csrf_token %}
+
+    <textarea name="content"
+              rows="10"
+              class="w-full border p-3 font-mono"
+              placeholder="Enter wire funding instructions...">{{ instruction.content }}</textarea>
+
+    <button class="bg-blue-600 text-white px-4 py-2 rounded">
+        Save Instructions
+    </button>
+</form>
+{% endblock %}
