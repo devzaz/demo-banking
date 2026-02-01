@@ -15,6 +15,18 @@
   <!-- Nav -->
   <nav class="flex-1 px-3 py-4 text-sm">
     <div class="space-y-1">
+
+      <!-- ✅ NEW: Dashboard -->
+      <a href="{% url 'admin_dashboard' %}"
+         class="group flex items-center gap-3 rounded-xl px-3 py-2 text-slate-200 hover:bg-white/10 hover:text-white transition">
+        <!-- dashboard icon -->
+        <svg class="h-4 w-4 text-slate-300 group-hover:text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 13h8V3H3v10Zm10 8h8V11h-8v10ZM3 21h8v-6H3v6Zm10-10h8V3h-8v8Z"
+                stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+        <span class="font-medium">Dashboard</span>
+      </a>
+
       <a href="{% url 'admin_customer_list' %}"
          class="group flex items-center gap-3 rounded-xl px-3 py-2 text-slate-200 hover:bg-white/10 hover:text-white transition">
         <!-- users icon -->

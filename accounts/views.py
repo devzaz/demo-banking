@@ -44,7 +44,7 @@ def otp_verify(request):
     # If already logged in, do not show OTP again
     if request.user.is_authenticated:
         if request.user.is_staff:
-            return redirect("admin_customer_list")
+            return redirect("admin_dashboard")
         return redirect("client_dashboard")
     
     user_id = request.session.get("otp_user_id")

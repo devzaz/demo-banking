@@ -1,0 +1,151 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="space-y-8">
+  <!-- Header -->
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Admin Dashboard</h1>
+      <p class="text-sm text-slate-500">Overview of customers, accounts, and recent activity.</p>
+    </div>
+
+    <a href="{% url 'admin_import_sample_data' %}"
+       class="inline-flex items-center justify-center gap-2 rounded-xl bg-bankBlue px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100">
+      <!-- download icon -->
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M8 11l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      Import Sample Data
+    </a>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div class="text-sm text-slate-500">Customers</div>
+      <div class="mt-2 text-2xl font-semibold text-slate-900 font-mono tabular-nums">{{ total_customers }}</div>
+      <div class="mt-3 h-1 w-full rounded-full bg-slate-100"></div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div class="text-sm text-slate-500">Accounts</div>
+      <div class="mt-2 text-2xl font-semibold text-slate-900 font-mono tabular-nums">{{ total_accounts }}</div>
+      <div class="mt-3 h-1 w-full rounded-full bg-slate-100"></div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div class="text-sm text-slate-500">Total Available</div>
+      <div class="mt-2 text-2xl font-semibold text-emerald-700 font-mono tabular-nums">{{ total_available }}</div>
+      <div class="mt-3 h-1 w-full rounded-full bg-emerald-100"></div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div class="text-sm text-slate-500">Total Held</div>
+      <div class="mt-2 text-2xl font-semibold text-amber-700 font-mono tabular-nums">{{ total_held }}</div>
+      <div class="mt-3 h-1 w-full rounded-full bg-amber-100"></div>
+    </div>
+  </div>
+
+  <!-- Recent Financial Activity -->
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="border-b border-slate-200 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-slate-900">Recent Financial Activity</h2>
+        <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+          Latest
+        </span>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-50">
+          <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <th class="px-6 py-4">Timestamp</th>
+            <th class="px-6 py-4">Type</th>
+            <th class="px-6 py-4 text-right">Amount</th>
+            <th class="px-6 py-4">Reference</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-slate-100">
+          {% for e in recent_ledger %}
+          <tr class="{% cycle 'bg-white' 'bg-slate-50/40' %} hover:bg-slate-100/60 transition-colors">
+            <td class="px-6 py-4 font-mono tabular-nums text-slate-900">
+              {% if e.created_at %}{{ e.created_at|date:"Y-m-d H:i" }}{% else %}—{% endif %}
+            </td>
+            <td class="px-6 py-4">
+              <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+                {{ e.entry_type }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-right font-mono tabular-nums text-slate-900">
+              {{ e.amount }}
+            </td>
+            <td class="px-6 py-4 text-slate-700">
+              <span class="break-words">{{ e.reference }}</span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="px-6 py-10 text-center text-sm text-slate-500">
+              No recent financial activity.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Audit Logs -->
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="border-b border-slate-200 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-slate-900">Recent Audit Logs</h2>
+        <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+          Latest
+        </span>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-50">
+          <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <th class="px-6 py-4">Timestamp</th>
+            <th class="px-6 py-4">User</th>
+            <th class="px-6 py-4">Action</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-slate-100">
+          {% for a in recent_audits %}
+          <tr class="{% cycle 'bg-white' 'bg-slate-50/40' %} hover:bg-slate-100/60 transition-colors">
+            <td class="px-6 py-4 font-mono tabular-nums text-slate-900">
+              {% if a.created_at %}{{ a.created_at|date:"Y-m-d H:i" }}{% else %}—{% endif %}
+            </td>
+            <td class="px-6 py-4 text-slate-700">
+              {{ a.user|default:"System" }}
+            </td>
+            <td class="px-6 py-4">
+              <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+                {{ a.get_action_display }}
+              </span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" class="px-6 py-10 text-center text-sm text-slate-500">
+              No recent audit logs.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

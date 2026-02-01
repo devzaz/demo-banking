@@ -1,0 +1,68 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="max-w-2xl space-y-6">
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Import Demo Data</h1>
+    <p class="mt-1 text-sm text-slate-500">
+      Create sample customers, accounts, and transactions for presentation/testing.
+    </p>
+  </div>
+
+  <!-- Warning Card -->
+  <div class="rounded-2xl border border-red-200 bg-red-50 p-6">
+    <div class="flex items-start gap-3">
+      <div class="mt-0.5 flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-700">
+        <!-- alert icon -->
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <path d="M10.3 4.3 2.6 18.2A2 2 0 0 0 4.3 21h15.4a2 2 0 0 0 1.7-2.8L13.7 4.3a2 2 0 0 0-3.4 0Z"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="flex-1">
+        <div class="text-sm font-semibold text-red-900">Warning</div>
+        <p class="mt-1 text-sm text-red-800">
+          This action will create demo data for presentation purposes. Do not run this on production.
+        </p>
+
+        <ul class="mt-3 list-disc pl-5 text-sm text-red-800 space-y-1">
+          <li>Creates sample customers and accounts</li>
+          <li>Adds demo deposits / ledger entries</li>
+          <li>May affect totals and dashboards</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action -->
+  <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <form method="post" class="flex flex-col gap-3 sm:flex-row sm:items-center">
+      {% csrf_token %}
+
+      <button
+        type="submit"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-100"
+      >
+        <!-- bolt icon -->
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M13 2 3 14h7l-1 8 12-14h-7l-1-6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Confirm Import
+      </button>
+
+      <a href="{% url 'admin_dashboard' %}"
+         class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100">
+        Cancel
+      </a>
+
+      <p class="text-xs text-slate-500 sm:ml-auto">
+        This action should be audited.
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock %}

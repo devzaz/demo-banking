@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from ledger.models import Account
 from decimal import Decimal
-from transfers.models import ExternalWireRequest
+from transfers.models import ExternalWireRequest,Beneficiary
 from ledger.services import (
     deposit_pending,
     deposit_settle,
@@ -19,6 +19,15 @@ from .models import FundingInstruction
 from audit.services import log_action
 
 
+
+from ledger.models import Account, LedgerEntry
+from audit.models import AuditLog
+from django.db.models import Sum
+
+from instruments.models import KTT
+
+from django.db import transaction
+from transfers.models import Beneficiary
 
 @staff_member_required
 def customer_list(request):
@@ -156,3 +165,164 @@ def funding_instruction_edit(request):
     return render(request, "admin/funding/edit.html", {
         "instruction":instruction
     })
+
+
+
+
+
+
+@staff_member_required
+def admin_dashboard(request):
+    context = {
+        "total_customers": Account.objects.values("customer").distinct().count(),
+        "total_accounts": Account.objects.count(),
+        "total_available": Account.objects.aggregate(
+            total=Sum("available_balance")
+        )["total"] or 0,
+        "total_held": Account.objects.aggregate(
+            total=Sum("held_balance")
+        )["total"] or 0,
+        "pending_wires": ExternalWireRequest.objects.filter(
+            status="PENDING"
+        ).count(),
+        "recent_ledger": LedgerEntry.objects.order_by("-created_at")[:10],
+        "recent_audits": AuditLog.objects.order_by("-created_at")[:10],
+    }
+
+    return render(request, "admin/dashboard.html", context)
+
+
+
+
+
+
+
+
+
+
+# import data
+
+
+@staff_member_required
+def import_sample_data(request):
+    if request.method == "POST":
+        with transaction.atomic():
+
+            # --------------------------------------------------
+            # 1️⃣ WIPE PREVIOUS DEMO DATA (SAFE FOR DEMO)
+            # --------------------------------------------------
+            User.objects.filter(username__startswith="demo_client_").delete()
+
+            # --------------------------------------------------
+            # 2️⃣ CREATE DEMO USERS (20)
+            # --------------------------------------------------
+            users = []
+            for i in range(1, 21):
+                user = User(
+                    username=f"demo_client_{i}",
+                    email=f"demo{i}@client.com"
+                )
+                user.set_password("demo1234")
+                users.append(user)
+
+            User.objects.bulk_create(users)
+            users = list(User.objects.filter(username__startswith="demo_client_"))
+
+            # --------------------------------------------------
+            # 3️⃣ CREATE ACCOUNTS (1 PER USER)
+            # --------------------------------------------------
+            accounts = []
+            for user in users:
+                accounts.append(Account(
+                    customer=user,
+                    currency="USD"
+                ))
+
+            Account.objects.bulk_create(accounts)
+            accounts = list(Account.objects.all())
+
+            # --------------------------------------------------
+            # 4️⃣ CREATE BENEFICIARIES (REQUIRED FOR WIRES)
+            # --------------------------------------------------
+            beneficiaries = []
+            for acc in accounts:
+                beneficiaries.append(Beneficiary(
+                    customer=acc.customer,
+                    name="Demo Beneficiary",
+                    bank_name="Demo External Bank",
+                    account_number=f"EXT-{acc.id}",
+                    country="US",
+                ))
+
+            Beneficiary.objects.bulk_create(beneficiaries)
+            beneficiaries = list(Beneficiary.objects.all())
+
+            # --------------------------------------------------
+            # 5️⃣ CREATE 100 DEPOSITS (LEDGER-SAFE)
+            # --------------------------------------------------
+            for i in range(100):
+                acc = accounts[i % len(accounts)]
+                ref = f"DEMO-DEP-{i+1}"
+
+                deposit_pending(
+                    account_id=acc.id,
+                    amount=Decimal("1000"),
+                    reference=ref
+                )
+                deposit_settle(
+                    account_id=acc.id,
+                    amount=Decimal("1000"),
+                    reference=ref
+                )
+
+            # --------------------------------------------------
+            # 6️⃣ CREATE WIRE REQUESTS (30)
+            # --------------------------------------------------
+            wires = []
+            for i, acc in enumerate(accounts[:30]):
+                beneficiary = beneficiaries[i % len(beneficiaries)]
+
+                wires.append(ExternalWireRequest(
+                    customer=acc.customer,
+                    account=acc,
+                    beneficiary=beneficiary,
+                    amount=Decimal("500"),
+                    status="PENDING" if i % 2 == 0 else "APPROVED",
+                    reference=f"DEMO-WIRE-{i+1}"
+                ))
+
+            ExternalWireRequest.objects.bulk_create(wires)
+
+            # --------------------------------------------------
+            # 7️⃣ CREATE KTT INSTRUMENTS (10)
+            # --------------------------------------------------
+            instruments = []
+            for acc in accounts[:10]:
+                instruments.append(KTT(
+                    customer=acc.customer,
+                    title="Demo KTT Instrument",
+                    message=(
+                        "This is a demo-generated banking instrument.\n\n"
+                        "Issued by Prominence Bank for demonstration purposes."
+                    )
+                ))
+
+            KTT.objects.bulk_create(instruments)
+
+            # --------------------------------------------------
+            # 8️⃣ CREATE AUDIT LOGS (200)
+            # --------------------------------------------------
+            logs = []
+            for i in range(200):
+                logs.append(AuditLog(
+                    user=None,
+                    action="SYSTEM",
+                    description=f"Demo audit event {i+1}"
+                ))
+
+            AuditLog.objects.bulk_create(logs)
+
+        messages.success(request, "Large-scale demo data imported successfully")
+        return redirect("admin_dashboard")
+
+    return render(request, "admin/import_confirm.html")
