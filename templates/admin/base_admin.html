@@ -22,13 +22,47 @@
 
 <body class="min-h-screen bg-slate-100 text-slate-900">
   <div class="min-h-screen flex">
-    {% include "admin/partials/sidebar.html" %}
 
-    <div class="flex-1 min-w-0 flex flex-col">
+    <!-- Mobile sidebar backdrop -->
+    <div id="sidebarBackdrop"
+         class="fixed inset-0 z-40 bg-slate-900/50 hidden lg:hidden"
+         onclick="toggleSidebar(false)"></div>
+
+    <!-- Sidebar: off-canvas on mobile, static on lg+ -->
+    <aside id="sidebar"
+           class="fixed inset-y-0 left-0 z-50 w-72 transform -translate-x-full transition-transform duration-200 ease-out
+                  lg:static lg:translate-x-0 lg:transform-none lg:z-auto">
+      {% include "admin/partials/sidebar.html" %}
+    </aside>
+
+    <!-- Page -->
+    <div class="flex-1 min-w-0 flex flex-col lg:pl-0">
+      <!-- Mobile top bar button (if your navbar already has one, remove this) -->
+      <div class="lg:hidden sticky top-0 z-30 bg-white border-b border-slate-200">
+        <div class="px-4 py-3 flex items-center gap-3">
+          <button type="button"
+                  class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-700 shadow-sm hover:bg-slate-50"
+                  onclick="toggleSidebar(true)"
+                  aria-label="Open menu">
+            <!-- hamburger icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+
+          <div class="min-w-0">
+            <div class="text-sm font-semibold truncate">Prominence Bank</div>
+            <div class="text-xs text-slate-500 truncate">Admin Back Office</div>
+          </div>
+        </div>
+      </div>
+
       {% include "admin/partials/navbar.html" %}
 
       <!-- Content -->
-      <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+      <main class="flex-1 px-4 py-5 sm:px-6 lg:px-8">
         <div class="mx-auto max-w-7xl">
           {% block content %}{% endblock %}
         </div>
@@ -38,7 +72,32 @@
     </div>
   </div>
 
-  <!-- Optional: small utility for dropdowns/modals later -->
-  {# <script src="{% static 'js/admin.js' %}"></script> #}
+  <script>
+    function toggleSidebar(open) {
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (!sidebar || !backdrop) return;
+
+      if (open) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    }
+
+    // Close on ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleSidebar(false);
+    });
+
+    // If screen resized to lg+, ensure sidebar is not stuck hidden
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1024) toggleSidebar(false);
+    });
+  </script>
 </body>
 </html>

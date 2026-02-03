@@ -1,25 +1,27 @@
 {% extends "client/base_client.html" %}
 
 {% block content %}
-<div class="max-w-3xl space-y-6">
+<div class="mx-auto w-full max-w-3xl space-y-6">
   <!-- Header -->
-  <div>
-    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Add Beneficiary</h1>
+  <div class="px-1">
+    <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">Add Beneficiary</h1>
     <p class="mt-1 text-sm text-slate-500">
       Add a new beneficiary for wire transfers. Please verify with OTP.
-      <span class="block text-xs text-slate-400 mt-1">Demo OTP: <span class="font-semibold text-slate-600">123456</span></span>
+      <span class="block text-xs text-slate-400 mt-1">
+        Demo OTP: <span class="font-semibold text-slate-600">123456</span>
+      </span>
     </p>
   </div>
 
   <!-- Error -->
   {% if error %}
-    <div class="max-w-xl rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+    <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
       {{ error }}
     </div>
   {% endif %}
 
   <!-- Card -->
-  <div class="max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+  <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
     <form method="post" class="space-y-5">
       {% csrf_token %}
 
@@ -88,19 +90,19 @@
         <p class="text-xs text-slate-500">Enter the verification code to confirm this beneficiary.</p>
       </div>
 
-      <!-- Actions -->
-      <div class="flex items-center gap-3 pt-1">
+      <!-- Actions (stack on mobile) -->
+      <div class="flex flex-col-reverse gap-3 pt-1 sm:flex-row sm:items-center">
+        <a href="{% url 'transfers:client_beneficiaries' %}"
+           class="inline-flex w-full sm:w-auto items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100">
+          Cancel
+        </a>
+
         <button
           type="submit"
-          class="inline-flex items-center justify-center rounded-xl bg-bankBlue px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100"
+          class="inline-flex w-full sm:w-auto items-center justify-center rounded-xl bg-bankBlue px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100"
         >
           Save Beneficiary
         </button>
-
-        <a href="{% url 'transfers:client_beneficiaries' %}"
-           class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100">
-          Cancel
-        </a>
       </div>
 
       <!-- Note -->

@@ -1,41 +1,49 @@
 {% extends "client/base_client.html" %}
 
 {% block content %}
+<!-- Flatpickr (calendar) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 <div class="space-y-6">
   <!-- Header -->
   <div>
-    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Account Statement</h1>
+    <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">Account Statement</h1>
     <p class="mt-1 text-sm text-slate-500">Generate a statement for a date range and download as CSV or PDF.</p>
   </div>
 
   <!-- Filters -->
-  <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+  <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm">
     <form method="get" class="grid grid-cols-1 gap-4 sm:grid-cols-4 sm:items-end">
+      <!-- From -->
       <div class="space-y-1.5">
         <label for="from" class="text-sm font-semibold text-slate-700">From</label>
         <input
           id="from"
-          type="date"
+          type="text"
           name="from"
           required
           value="{{ start|date:'Y-m-d' }}"
-          class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+          placeholder="YYYY-MM-DD"
+          class="date-input w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
         />
       </div>
 
+      <!-- To -->
       <div class="space-y-1.5">
         <label for="to" class="text-sm font-semibold text-slate-700">To</label>
         <input
           id="to"
-          type="date"
+          type="text"
           name="to"
           required
           value="{{ end|date:'Y-m-d' }}"
-          class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+          placeholder="YYYY-MM-DD"
+          class="date-input w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
         />
       </div>
 
-      <div class="sm:col-span-2 flex gap-3">
+      <!-- Buttons -->
+      <div class="sm:col-span-2 flex flex-col gap-3 sm:flex-row sm:justify-end">
         <button
           type="submit"
           class="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-bankBlue px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100"
@@ -63,9 +71,9 @@
   </div>
 
   {% if entries %}
-  <!-- Table -->
+  <!-- Entries Card -->
   <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-    <div class="border-b border-slate-200 px-6 py-4">
+    <div class="border-b border-slate-200 px-4 py-3 sm:px-6 sm:py-4">
       <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 class="text-sm font-semibold text-slate-900">Statement Entries</h2>
@@ -76,7 +84,40 @@
       </div>
     </div>
 
-    <div class="overflow-x-auto">
+    <!-- Mobile cards -->
+    <div class="sm:hidden divide-y divide-slate-100">
+      {% for e in entries %}
+      <div class="p-4">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <div class="text-sm font-semibold text-slate-900 font-mono tabular-nums">
+              {{ e.created_at|date:"Y-m-d" }}
+            </div>
+            <div class="mt-2 inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+              {{ e.entry_type }}
+            </div>
+          </div>
+
+          <div class="text-right">
+            <div class="text-xs text-slate-500">Amount</div>
+            <div class="font-mono tabular-nums font-semibold text-slate-900 whitespace-nowrap">
+              {{ e.amount }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+          <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">Reference</div>
+          <div class="mt-1 text-sm text-slate-700 break-words">
+            {{ e.reference }}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Desktop table -->
+    <div class="hidden sm:block overflow-x-auto">
       <table class="min-w-full text-sm">
         <thead class="bg-slate-50">
           <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -117,11 +158,21 @@
   {% else %}
   <!-- Empty hint (only show if user already submitted dates) -->
   {% if start and end %}
-  <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+  <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
     <div class="text-sm font-semibold text-slate-900">No entries found</div>
     <p class="mt-1 text-sm text-slate-500">Try a different date range.</p>
   </div>
   {% endif %}
   {% endif %}
 </div>
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  // ✅ Works on all browsers (Chrome, Safari, mobile)
+  flatpickr(".date-input", {
+    dateFormat: "Y-m-d",
+    allowInput: true
+  });
+</script>
 {% endblock %}

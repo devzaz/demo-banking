@@ -5,14 +5,13 @@
   <!-- Header -->
   <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <div>
-      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">My Wire Requests</h1>
+      <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">My Wire Requests</h1>
       <p class="text-sm text-slate-500">Track the status of your submitted wire requests.</p>
     </div>
 
     <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
       <a href="{% url 'client_funding_instructions' %}"
-         class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100">
-        <!-- info icon -->
+         class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100">
         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
           <path d="M12 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -22,90 +21,143 @@
       </a>
 
       <a href="{% url 'transfers:client_wire_create' %}"
-         class="inline-flex items-center justify-center gap-2 rounded-xl bg-bankBlue px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100">
+         class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-bankBlue px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100">
         <span class="text-lg leading-none">+</span>
         New Wire
       </a>
     </div>
   </div>
 
-  <!-- List -->
+  <!-- List Card -->
   <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-    <div class="overflow-x-auto">
-      <table class="min-w-full text-sm">
-        <thead class="bg-slate-50">
-          <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-            <th class="px-6 py-4">Amount</th>
-            <th class="px-6 py-4">Status</th>
-            <th class="px-6 py-4 text-right">Submitted</th>
-          </tr>
-        </thead>
+    {% if requests %}
+      <!-- ✅ Mobile cards -->
+      <div class="sm:hidden divide-y divide-slate-100">
+        {% for w in requests %}
+        <div class="p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <div class="text-xs text-slate-500">Amount</div>
+              <div class="font-mono tabular-nums text-lg font-semibold text-slate-900">
+                {{ w.amount }}
+              </div>
+            </div>
 
-        <tbody class="divide-y divide-slate-100">
-          {% for w in requests %}
-          <tr class="{% cycle 'bg-white' 'bg-slate-50/40' %} hover:bg-slate-100/60 transition-colors">
-            <td class="px-6 py-4 font-mono tabular-nums text-slate-900">
-              {{ w.amount }}
-            </td>
+            <div class="text-right">
+              <div class="text-xs text-slate-500">Status</div>
+              <div class="mt-1">
+                {% if w.status == 'PENDING' %}
+                  <span class="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                    Pending
+                  </span>
+                {% elif w.status == 'APPROVED' %}
+                  <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                    Approved
+                  </span>
+                {% elif w.status == 'REJECTED' %}
+                  <span class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-800">
+                    Rejected
+                  </span>
+                {% else %}
+                  <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                    {{ w.status }}
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
 
-            <td class="px-6 py-4">
-              {% if w.status == 'PENDING' %}
-                <span class="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
-                  Pending
-                </span>
-              {% elif w.status == 'APPROVED' %}
-                <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
-                  Approved
-                </span>
-              {% elif w.status == 'REJECTED' %}
-                <span class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-800">
-                  Rejected
-                </span>
-              {% else %}
-                <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                  {{ w.status }}
-                </span>
-              {% endif %}
-            </td>
-
-            <td class="px-6 py-4 text-right text-slate-600">
+          <div class="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+            <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">Submitted</div>
+            <div class="mt-1 text-sm text-slate-700">
               {% if w.created_at %}
                 <span class="font-mono tabular-nums">{{ w.created_at|date:"Y-m-d" }}</span>
               {% else %}
                 <span class="text-slate-400">—</span>
               {% endif %}
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="3" class="px-6 py-12">
-              <div class="flex flex-col items-center text-center">
-                <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
-                  <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <div class="text-sm font-semibold text-slate-900">No wire requests yet</div>
-                <div class="text-sm text-slate-500">Create your first wire request to get started.</div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
 
-                <a href="{% url 'transfers:client_wire_create' %}"
-                   class="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-bankBlue px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100">
-                  <span class="text-lg leading-none">+</span>
-                  New Wire
-                </a>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+      <!-- ✅ Desktop table -->
+      <div class="hidden sm:block overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <th class="px-6 py-4">Amount</th>
+              <th class="px-6 py-4">Status</th>
+              <th class="px-6 py-4 text-right">Submitted</th>
+            </tr>
+          </thead>
 
-    <div class="border-t border-slate-200 bg-white px-6 py-4 text-sm text-slate-600">
-      Showing <span class="font-semibold text-slate-900">{{ requests|length }}</span>
-      request{{ requests|length|pluralize }}
-    </div>
+          <tbody class="divide-y divide-slate-100">
+            {% for w in requests %}
+            <tr class="{% cycle 'bg-white' 'bg-slate-50/40' %} hover:bg-slate-100/60 transition-colors">
+              <td class="px-6 py-4 font-mono tabular-nums text-slate-900">
+                {{ w.amount }}
+              </td>
+
+              <td class="px-6 py-4">
+                {% if w.status == 'PENDING' %}
+                  <span class="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                    Pending
+                  </span>
+                {% elif w.status == 'APPROVED' %}
+                  <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                    Approved
+                  </span>
+                {% elif w.status == 'REJECTED' %}
+                  <span class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-800">
+                    Rejected
+                  </span>
+                {% else %}
+                  <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                    {{ w.status }}
+                  </span>
+                {% endif %}
+              </td>
+
+              <td class="px-6 py-4 text-right text-slate-600">
+                {% if w.created_at %}
+                  <span class="font-mono tabular-nums">{{ w.created_at|date:"Y-m-d" }}</span>
+                {% else %}
+                  <span class="text-slate-400">—</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t border-slate-200 bg-white px-4 py-3 sm:px-6 sm:py-4 text-sm text-slate-600">
+        Showing <span class="font-semibold text-slate-900">{{ requests|length }}</span>
+        request{{ requests|length|pluralize }}
+      </div>
+    {% else %}
+      <!-- Empty -->
+      <div class="px-4 py-10 sm:px-6 sm:py-12">
+        <div class="flex flex-col items-center text-center">
+          <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="text-sm font-semibold text-slate-900">No wire requests yet</div>
+          <div class="text-sm text-slate-500">Create your first wire request to get started.</div>
+
+          <a href="{% url 'transfers:client_wire_create' %}"
+             class="mt-4 inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-bankBlue px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-slate-100">
+            <span class="text-lg leading-none">+</span>
+            New Wire
+          </a>
+        </div>
+      </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

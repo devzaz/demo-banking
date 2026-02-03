@@ -1,23 +1,35 @@
-<aside class="w-72 bg-bankBlue text-white flex flex-col border-r border-blue-400/30">
+<aside class="w-72 h-screen bg-bankBlue text-white flex flex-col border-r border-blue-400/30 overflow-y-auto">
   <!-- Brand -->
   <div class="px-5 py-5 border-b border-blue-400/30">
-    <div class="flex items-center gap-3">
-      <div class="h-10 w-10 rounded-2xl bg-white/15 flex items-center justify-center font-bold">
-        P
+    <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="h-10 w-10 shrink-0 rounded-2xl bg-white/15 flex items-center justify-center font-bold">
+          P
+        </div>
+        <div class="leading-tight min-w-0">
+          <div class="text-lg font-semibold tracking-tight truncate">Prominence Bank</div>
+          <div class="text-xs text-white/80 truncate">Client Portal</div>
+        </div>
       </div>
-      <div class="leading-tight">
-        <div class="text-lg font-semibold tracking-tight">Prominence Bank</div>
-        <div class="text-xs text-white/80">Client Portal</div>
-      </div>
+
+      <!-- ✅ Mobile close button (works with closeSidebar() in base template) -->
+      <button type="button"
+              class="sm:hidden inline-flex items-center justify-center rounded-xl bg-white/15 px-3 py-2 text-white/90 hover:bg-white/20"
+              onclick="closeSidebar()"
+              aria-label="Close menu">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 
   <!-- Nav -->
   <nav class="flex-1 px-3 py-4 text-sm">
     <div class="space-y-1">
+
       <a href="{% url 'client_dashboard' %}"
-         class="group flex items-center gap-3 rounded-xl px-3 py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
-        <!-- home icon -->
+         class="group flex items-center gap-3 rounded-xl px-3 py-3 sm:py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
         <svg class="h-4 w-4 text-white/80 group-hover:text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5Z"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -26,8 +38,7 @@
       </a>
 
       <a href="{% url 'transfers:client_beneficiaries' %}"
-         class="group flex items-center gap-3 rounded-xl px-3 py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
-        <!-- users icon -->
+         class="group flex items-center gap-3 rounded-xl px-3 py-3 sm:py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
         <svg class="h-4 w-4 text-white/80 group-hover:text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
@@ -38,8 +49,7 @@
       </a>
 
       <a href="{% url 'transfers:client_wire_requests' %}"
-         class="group flex items-center gap-3 rounded-xl px-3 py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
-        <!-- list icon -->
+         class="group flex items-center gap-3 rounded-xl px-3 py-3 sm:py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
         <svg class="h-4 w-4 text-white/80 group-hover:text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           <path d="M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
@@ -48,8 +58,7 @@
       </a>
 
       <a href="{% url 'transfers:client_wire_create' %}"
-         class="group flex items-center gap-3 rounded-xl px-3 py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
-        <!-- arrows icon -->
+         class="group flex items-center gap-3 rounded-xl px-3 py-3 sm:py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
         <svg class="h-4 w-4 text-white/80 group-hover:text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M7 7h14v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           <path d="M7 7l3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -60,8 +69,7 @@
       </a>
 
       <a href="{% url 'client_statements' %}"
-         class="group flex items-center gap-3 rounded-xl px-3 py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
-        <!-- document icon -->
+         class="group flex items-center gap-3 rounded-xl px-3 py-3 sm:py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
         <svg class="h-4 w-4 text-white/80 group-hover:text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6Z" stroke="currentColor" stroke-width="2"/>
           <path d="M14 3v6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -71,14 +79,14 @@
       </a>
 
       <a href="{% url 'instruments:client_ktt_list' %}"
-         class="group flex items-center gap-3 rounded-xl px-3 py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
-        <!-- file icon -->
+         class="group flex items-center gap-3 rounded-xl px-3 py-3 sm:py-2 text-white/90 hover:bg-white/15 hover:text-white transition">
         <svg class="h-4 w-4 text-white/80 group-hover:text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6Z" stroke="currentColor" stroke-width="2"/>
           <path d="M14 3v6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <span class="font-medium">Instruments</span>
       </a>
+
     </div>
   </nav>
 

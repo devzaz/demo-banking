@@ -22,9 +22,40 @@
 
 <body class="min-h-screen bg-slate-100 text-slate-900">
   <div class="min-h-screen flex">
-    {% include "client/partials/sidebar.html" %}
+    <!-- ✅ Mobile overlay -->
+    <div id="mobileOverlay"
+         class="fixed inset-0 z-40 hidden bg-slate-900/50 backdrop-blur-sm sm:hidden"
+         onclick="closeSidebar()"></div>
+
+    <!-- ✅ Responsive sidebar wrapper -->
+    <div id="sidebarWrapper"
+         class="fixed inset-y-0 left-0 z-50 w-72 -translate-x-full transition-transform duration-200 sm:static sm:translate-x-0">
+      {% include "client/partials/sidebar.html" %}
+    </div>
 
     <div class="flex-1 min-w-0 flex flex-col">
+      <!-- ✅ Mobile top bar (menu button) -->
+      <div class="sm:hidden sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
+          <button type="button"
+                  class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm"
+                  onclick="openSidebar()"
+                  aria-label="Open menu">
+            <!-- hamburger icon -->
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+
+          <div class="text-sm font-semibold text-slate-900 truncate">
+            Prominence Bank
+          </div>
+
+          <div class="w-10"></div>
+        </div>
+      </div>
+
+      <!-- Your existing navbar (desktop + can still show on mobile if you want) -->
       {% include "client/partials/navbar.html" %}
 
       <!-- Content -->
@@ -37,5 +68,39 @@
       {% include "shared/partials/footer.html" %}
     </div>
   </div>
+
+  <script>
+    const sidebar = document.getElementById("sidebarWrapper");
+    const overlay = document.getElementById("mobileOverlay");
+
+    function openSidebar() {
+      sidebar.classList.remove("-translate-x-full");
+      overlay.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeSidebar() {
+      sidebar.classList.add("-translate-x-full");
+      overlay.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    // Close on ESC
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeSidebar();
+    });
+
+    // Ensure correct state when resizing to desktop
+    window.addEventListener("resize", () => {
+      if (window.innerWidth >= 640) {
+        overlay.classList.add("hidden");
+        sidebar.classList.remove("-translate-x-full");
+        document.body.classList.remove("overflow-hidden");
+      } else {
+        // on mobile default closed
+        closeSidebar();
+      }
+    });
+  </script>
 </body>
 </html>

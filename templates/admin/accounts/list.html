@@ -5,7 +5,7 @@
   <!-- Header -->
   <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
     <div>
-      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Accounts</h1>
+      <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">Accounts</h1>
       <p class="text-sm text-slate-500">View balances and release deposits from transit.</p>
     </div>
 
@@ -29,8 +29,66 @@
     </div>
   </div>
 
-  <!-- Table Card -->
-  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+  <!-- ✅ Mobile Cards -->
+  <div class="space-y-3 sm:hidden">
+    {% for acc in accounts %}
+      <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-700 font-semibold">
+            {{ acc.customer.username|slice:":1"|upper }}
+          </div>
+          <div class="min-w-0">
+            <div class="font-semibold text-slate-900 truncate">{{ acc.customer.username }}</div>
+            <div class="mt-1 inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+              {{ acc.currency }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">Available</div>
+            <div class="mt-1 font-mono tabular-nums text-slate-900">{{ acc.available_balance }}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">Transit</div>
+            <div class="mt-1 font-mono tabular-nums">
+              {% if acc.transit_balance > 0 %}
+                <span class="text-amber-700">{{ acc.transit_balance }}</span>
+              {% else %}
+                <span class="text-slate-400">{{ acc.transit_balance }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          {% if acc.transit_balance > 0 %}
+            <a href="{% url 'admin_deposit_release' acc.id %}"
+               class="inline-flex w-full items-center justify-center rounded-xl bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-100">
+              Release Deposit
+            </a>
+          {% else %}
+            <div class="text-center text-sm text-slate-400">No actions</div>
+          {% endif %}
+        </div>
+      </div>
+    {% empty %}
+      <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+        <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+          <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 7h18v12H3V7Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M3 7l2-3h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="text-sm font-semibold text-slate-900">No accounts found</div>
+        <div class="text-sm text-slate-500">Accounts will appear here once created.</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- ✅ Desktop Table -->
+  <div class="hidden sm:block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
     <div class="overflow-x-auto">
       <table class="min-w-full text-sm">
         <thead class="bg-slate-50">
@@ -46,7 +104,6 @@
         <tbody class="divide-y divide-slate-100">
           {% for acc in accounts %}
           <tr class="{% cycle 'bg-white' 'bg-slate-50/40' %} hover:bg-slate-100/60 transition-colors">
-            <!-- Customer -->
             <td class="px-6 py-4">
               <div class="flex items-center gap-3">
                 <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 font-semibold">
@@ -60,19 +117,16 @@
               </div>
             </td>
 
-            <!-- Currency -->
             <td class="px-6 py-4">
               <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
                 {{ acc.currency }}
               </span>
             </td>
 
-            <!-- Available -->
             <td class="px-6 py-4 text-right font-mono tabular-nums text-slate-900">
               {{ acc.available_balance }}
             </td>
 
-            <!-- Transit -->
             <td class="px-6 py-4 text-right font-mono tabular-nums">
               {% if acc.transit_balance > 0 %}
                 <span class="text-amber-700">{{ acc.transit_balance }}</span>
@@ -81,7 +135,6 @@
               {% endif %}
             </td>
 
-            <!-- Actions -->
             <td class="px-6 py-4 text-right">
               {% if acc.transit_balance > 0 %}
                 <a href="{% url 'admin_deposit_release' acc.id %}"
@@ -115,7 +168,7 @@
     </div>
 
     <!-- Footer -->
-    <div class="flex items-center justify-between gap-3 border-t border-slate-200 bg-white px-6 py-4 text-sm text-slate-600">
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-t border-slate-200 bg-white px-4 sm:px-6 py-4 text-sm text-slate-600">
       <div>
         Showing <span class="font-semibold text-slate-900">{{ accounts|length }}</span>
         account{{ accounts|length|pluralize }}

@@ -1,19 +1,28 @@
 <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur">
-  <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
     <!-- Brand -->
-    <a href="{% url 'client_dashboard' %}" class="flex items-center gap-3">
-      <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-bankBlueLight text-bankBlue font-bold">
+    <a href="{% url 'client_dashboard' %}" class="flex items-center gap-3 min-w-0">
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-bankBlueLight text-bankBlue font-bold">
         P
       </div>
-      <div class="leading-tight">
-        <div class="text-lg font-semibold tracking-tight text-slate-900">Client Portal</div>
-        <div class="text-xs text-slate-500">Prominence Bank</div>
+
+      <!-- Desktop brand text -->
+      <div class="hidden sm:block leading-tight min-w-0">
+        <div class="text-lg font-semibold tracking-tight text-slate-900 truncate">Client Portal</div>
+        <div class="text-xs text-slate-500 truncate">Prominence Bank</div>
+      </div>
+
+      <!-- Mobile brand text (short) -->
+      <div class="sm:hidden leading-tight min-w-0">
+        <div class="text-sm font-semibold text-slate-900 truncate">Client</div>
+        <div class="text-xs text-slate-500 truncate">Prominence</div>
       </div>
     </a>
 
     <!-- User -->
-    <div class="flex items-center gap-3">
-      <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Desktop user card -->
+      <div class="hidden sm:flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
         <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 font-semibold">
           {{ request.user.username|slice:":1"|upper }}
         </div>
@@ -25,15 +34,20 @@
         </div>
       </div>
 
+      <!-- Mobile avatar only -->
+      <div class="sm:hidden flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 font-semibold">
+        {{ request.user.username|slice:":1"|upper }}
+      </div>
+
+      <!-- Logout: icon-only on mobile, full on desktop -->
       <a href="{% url 'logout' %}"
-         class="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 focus:outline-none focus:ring-4 focus:ring-red-100">
-        <!-- logout icon -->
+         class="inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 focus:outline-none focus:ring-4 focus:ring-red-100">
         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M10 17l5-5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           <path d="M21 4v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
-        Logout
+        <span class="hidden sm:inline">Logout</span>
       </a>
     </div>
   </div>
